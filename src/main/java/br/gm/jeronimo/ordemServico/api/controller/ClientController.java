@@ -2,7 +2,8 @@
 package br.gm.jeronimo.ordemServico.api.controller;
 
 import br.gm.jeronimo.ordemServico.domain.model.Cliente;
-import java.util.ArrayList;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,18 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ClientController {
     
-    List<Cliente> listaClientes;
+    @PersistenceContext
+    //INSTANCIANDO E INJETANDO O ENTITYMANAGER (CAREGA O ATRIBUTO)
+    private EntityManager manager;//Manager = interface jakarta persistence usado para consulta nas entities
+    
     
     @GetMapping("/clientes")
     public List<Cliente>listas() {
         
-        listaClientes = new ArrayList<Cliente>();
-        listaClientes.add(new Cliente(1, "KGe", "kge@teste.com", "11-99999-9999"));        
-        listaClientes.add(new Cliente(1, "Maria", "maria@teste.com", "11-88888-8888"));        
-        listaClientes.add(new Cliente(1, "Joao", "joao@teste.com", "11-77777-7777"));        
+        //Linguagem JPQL (tipo um sql do JAKARTA)
         
-        
-        return listaClientes;
+        return manager.createQuery("from Cliente", Cliente.class)//(create query)cria uma consulta
+                .getResultList();//getResultLst ta retornando a lista tipo cliente
     }
     
     

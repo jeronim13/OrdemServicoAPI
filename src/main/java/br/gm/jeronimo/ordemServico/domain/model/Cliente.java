@@ -1,20 +1,32 @@
 
 package br.gm.jeronimo.ordemServico.domain.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 /**
  *
  * @author digma
  */
+@Entity
 public class Cliente {
     
-   private long id;
-   private String nome;
-   private String email;
-   private String fone;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+    private String nome;
+    private String email;
+    
+    @Column(name = "telefone")
+    private String fone;
 
    
    //constructor vazio permite criar objeto "em branco"
    //porta de entrada e constructor padrão, a base;
+   //constructor default
     public Cliente() {
     }
     //constructor all(com parâmetros)
