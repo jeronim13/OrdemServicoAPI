@@ -2,10 +2,19 @@
 package br.gm.jeronimo.ordemServico.api.controller;
 
 import br.gm.jeronimo.ordemServico.domain.model.Cliente;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import br.gm.jeronimo.ordemServico.domain.repository.ClienteRepository;
 import java.util.List;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -16,20 +25,54 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ClientController {
     
-    @PersistenceContext
-    //INSTANCIANDO E INJETANDO O ENTITYMANAGER (CAREGA O ATRIBUTO)
-    private EntityManager manager;//Manager = interface jakarta persistence usado para consulta nas entities
+    @Autowired
+    private ClienteRepository clienteRepository;
     
     
-    @GetMapping("/clientes")
-    public List<Cliente>listas() {
+    @GetMapping("/clientes/{clienteID}")
+    public ResponseEntity <Cliente> buscar(@PathVariable Long clienteID) {
         
-        //Linguagem JPQL (tipo um sql do JAKARTA)
+        Optional<Cliente> cliente = clienteRepository.findById(clienteID);
         
-        return manager.createQuery("from Cliente", Cliente.class)//(create query)cria uma consulta
-                .getResultList();//getResultLst ta retornando a lista tipo cliente
+        if (cliente.isPresent()){
+        
+            return ResponseEntity.ok(cliente.get());
+        } else {
+            return ResponseEntity.notFound().build();}
     }
     
+    @PostMapping("/clientes")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Cliente adicionar(@RequestBody Cliente cliente) {
+        
+        return clienteRepository.save(cliente);
+    }
+        
     
+    @PutMapping("/clientes/{clienteID}")
+    public ResponseEntity<Cliente> atualizar (@PathVariable Long clienteID,
+                                             @RequestBody Cliente cliente){
+        //verifica se o cliente existe
+        if (!clienteRepository.existsById(clienteID)){
+            return ResponseEntity.notFound().build();
+        }
+        
+        cliente.setId(clienteID);
+        cliente = clienteRepository.save(cliente);
+        return ResponseEntity.ok(cliente);
+    }
+    
+    @DeleteMapping("/clientes/{clienteID}")
+    public ResponseEntity<Void> excluir (@PathVariable Long clienteID){
+        //verifica se o cliente existe ou nao
+        
+        if (!clienteRepository.existsById(clienteID)) {
+            return ResponseEntity.notFound().build();
+        }
+        clienteRepository.deleteById(clienteID);
+        return ResponseEntity.noContent().build();
+    }
+        
+
 
 }
