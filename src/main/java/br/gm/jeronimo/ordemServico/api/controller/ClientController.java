@@ -3,6 +3,7 @@ package br.gm.jeronimo.ordemServico.api.controller;
 
 import br.gm.jeronimo.ordemServico.domain.model.Cliente;
 import br.gm.jeronimo.ordemServico.domain.repository.ClienteRepository;
+import br.gm.jeronimo.ordemServico.domain.service.ClienteServer;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,9 @@ public class ClientController {
     @Autowired
     private ClienteRepository clienteRepository;
     
+    @Autowired
+    private ClienteServer clienteService;
+    
     
     @GetMapping("/clientes/{clienteID}")
     public ResponseEntity <Cliente> buscar(@PathVariable Long clienteID) {
@@ -46,7 +50,7 @@ public class ClientController {
     @ResponseStatus(HttpStatus.CREATED)
     public Cliente adicionar(@Valid @RequestBody Cliente cliente) {
         
-        return clienteRepository.save(cliente);
+        return clienteService.salvar(cliente);
     }
         
     
@@ -59,7 +63,7 @@ public class ClientController {
         }
         
         cliente.setId(clienteID);
-        cliente = clienteRepository.save(cliente);
+        cliente = clienteService.salvar(cliente);
         return ResponseEntity.ok(cliente);
     }
     
@@ -70,7 +74,7 @@ public class ClientController {
         if (!clienteRepository.existsById(clienteID)) {
             return ResponseEntity.notFound().build();
         }
-        clienteRepository.deleteById(clienteID);
+        clienteService.excluir(clienteID);
         return ResponseEntity.noContent().build();
     }
         
