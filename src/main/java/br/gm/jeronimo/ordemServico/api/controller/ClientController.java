@@ -3,6 +3,7 @@ package br.gm.jeronimo.ordemServico.api.controller;
 
 import br.gm.jeronimo.ordemServico.domain.model.Cliente;
 import br.gm.jeronimo.ordemServico.domain.repository.ClienteRepository;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,14 +44,14 @@ public class ClientController {
     
     @PostMapping("/clientes")
     @ResponseStatus(HttpStatus.CREATED)
-    public Cliente adicionar(@RequestBody Cliente cliente) {
+    public Cliente adicionar(@Valid @RequestBody Cliente cliente) {
         
         return clienteRepository.save(cliente);
     }
         
     
     @PutMapping("/clientes/{clienteID}")
-    public ResponseEntity<Cliente> atualizar (@PathVariable Long clienteID,
+    public ResponseEntity<Cliente> atualizar (@Valid @PathVariable Long clienteID,
                                              @RequestBody Cliente cliente){
         //verifica se o cliente existe
         if (!clienteRepository.existsById(clienteID)){
