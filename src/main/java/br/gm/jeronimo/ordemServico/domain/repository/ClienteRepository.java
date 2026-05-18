@@ -5,6 +5,7 @@
 package br.gm.jeronimo.ordemServico.domain.repository;
 
 import br.gm.jeronimo.ordemServico.domain.model.Cliente;
+import br.gm.jeronimo.ordemServico.domain.model.OrdemServico;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -20,5 +21,6 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     List<Cliente> findByNome (String nome);
     List<Cliente> findByNomeContaining (String nome);
     Cliente findByEmail(String email);
+
     
 }
